@@ -10,7 +10,8 @@ import {
   Tabs,
   Tab,
   Button,
-  Badge,
+  Chip,
+  Avatar,
   TextField,
   Typography,
   Select,
@@ -88,12 +89,7 @@ export default function StoreTable({
   return (
     <Paper>
       <div style={{ padding: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <Badge badgeContent={totalCount} color="primary">
-          <Typography variant="h6">
-            {totalCount === 1 ? "Store" : "Stores"} 
-            {/* {totalCount}  */}
-          </Typography>
-        </Badge>
+      <Chip color="primary" avatar={<Avatar>{totalCount}</Avatar>} label={totalCount === 1 ? "Store" : "Stores"} />
 
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <TextField
@@ -176,7 +172,8 @@ export default function StoreTable({
                     position: index === 0 ? "sticky" : "static", 
                     left: 0, 
                     zIndex: 1, 
-                    backgroundColor: "#fff", 
+                    color: "#fff",
+                    backgroundColor: "#0071DC", 
                     border: "1px solid #ddd",
                     whiteSpace: "nowrap",
                   }}
