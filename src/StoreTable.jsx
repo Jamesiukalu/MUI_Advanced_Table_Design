@@ -90,7 +90,8 @@ export default function StoreTable({
       <div style={{ padding: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Badge badgeContent={totalCount} color="primary">
           <Typography variant="h6">
-            {totalCount === 1 ? "Store" : "Stores"} {totalCount} 
+            {totalCount === 1 ? "Store" : "Stores"} 
+            {/* {totalCount}  */}
           </Typography>
         </Badge>
 
