@@ -12,18 +12,16 @@ import {
   Chip,
   Avatar,
   TextField,
-  Typography,
   Select,
   FormControl,
   InputLabel,
   MenuItem as SelectMenuItem,
 } from "@mui/material";
-import { FilterList, Search, SmartButton } from "@mui/icons-material";
+import { FilterList, Search } from "@mui/icons-material";
 import { tableConfig } from "./data/tableConfig";
 
 export default function StoreTable({
   stores = [],
-  filters,
   setFilters,
   totalCount,
 }) {
@@ -180,7 +178,7 @@ export default function StoreTable({
       </Box>
 
       <TableContainer style={{ overflowX: "auto", maxWidth: "100%" }}>
-        <Table sx={{ minWidth: 800 }}>
+        <Table sx={{ minWidth: 'auto' }}>
           <TableHead>
             <TableRow>
               {tableConfig[activeTab].columns.map((column, index) => (

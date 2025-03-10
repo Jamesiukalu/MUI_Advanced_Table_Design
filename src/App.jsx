@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { mockStores } from "./data/mockStores";
 import StoreTable from "./StoreTable";
-import { Container, Typography } from "@mui/material";
+import { Container, Typography, Box } from "@mui/material";
 
 import { tableConfig } from "./data/tableConfig";
 export default function App() {
@@ -33,14 +33,14 @@ export default function App() {
         Store Portfolio
       </Typography>
 
-      <div style={{ overflow: "auto", maxHeight: "calc(100vh - 120px)" }}>
+      <Box style={{ maxHeight: "calc(100vh - 120px)" }}>
         <StoreTable
           stores={filteredStores}
           filters={filters}
           setFilters={setFilters}
           totalCount={filteredStores.length}
         />
-      </div>
+      </Box>
     </Container>
   );
 }
