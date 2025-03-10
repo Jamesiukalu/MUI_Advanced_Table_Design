@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import {
   Table,
+  Box,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
   Paper,
-  Tabs,
-  Tab,
   Button,
   Badge,
   TextField,
@@ -18,7 +17,7 @@ import {
   InputLabel,
   MenuItem as SelectMenuItem,
 } from "@mui/material";
-import { FilterList, Search } from "@mui/icons-material";
+import { FilterList, Search, SmartButton } from "@mui/icons-material";
 import { tableConfig } from "./data/tableConfig";
 
 export default function StoreTable({
@@ -32,9 +31,10 @@ export default function StoreTable({
   const [selectedAttribute, setSelectedAttribute] = useState("");
   const [selectedValues, setSelectedValues] = useState([]);
 
-  const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue);
-    setSelectedAttribute("");
+  // Handle dropdown change for tabs
+  const handleTabChange = (event) => {
+    setActiveTab(event.target.value);
+    setSelectedAttribute(""); // Reset selected attribute when tab changes
   };
 
   const handleAttributeChange = (event) => {
@@ -62,7 +62,9 @@ export default function StoreTable({
     if (!selectedAttribute) return [];
     return [
       ...new Set(
-        stores.map((store) => tableConfig[activeTab].getData(store)[selectedAttribute])
+        stores.map(
+          (store) => tableConfig[activeTab].getData(store)[selectedAttribute]
+        )
       ),
     ];
   };
@@ -87,15 +89,23 @@ export default function StoreTable({
 
   return (
     <Paper>
-      <div style={{ padding: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <Box
+         sx={{
+          padding: 2,
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          justifyContent: "space-between",
+          alignItems: { xs: "flex-start", sm: "center" },
+          gap: 2,
+        }}
+      >
         <Badge badgeContent={totalCount} color="primary">
           <Typography variant="h6">
-            {totalCount === 1 ? "Store" : "Stores"} 
-            {/* {totalCount}  */}
+            {totalCount === 1 ? "Store" : "Stores"}
           </Typography>
         </Badge>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <TextField
             variant="outlined"
             size="small"
@@ -105,31 +115,38 @@ export default function StoreTable({
             InputProps={{
               startAdornment: <Search fontSize="small" />,
             }}
+            sx={{ width: { xs: "auto", sm: "auto" } }}
           />
           <Button
             variant="contained"
             startIcon={<FilterList />}
             onClick={() => setFilters((prev) => ({ ...prev, attributes: {} }))}
+            sx={{ whiteSpace: "nowrap",  }}
           >
             Clear Filters
           </Button>
-        </div>
-      </div>
+        </Box>
+      </Box>
 
-      <Tabs 
-        value={activeTab} 
-        onChange={handleTabChange}
-        variant="fullWidth"
-        indicatorColor="primary"
-        textColor="primary"
+      <Box
+        sx={{
+          padding: 2,
+          display: "flex",
+          gap: 2,
+          flexDirection: { xs: "column", sm: "row" },
+        }}
       >
-        {Object.keys(tableConfig).map((tab) => (
-          <Tab key={tab} label={tab} value={tab} />
-        ))}
-      </Tabs>
-
-      <div style={{ padding: 16, display: "flex", gap: 16 }}>
-        <FormControl variant="outlined" size="small" style={{ minWidth: 200 }}>
+        <FormControl variant="outlined" size="small"  sx={{ minWidth: 200 }}>
+          <InputLabel>View</InputLabel>
+          <Select value={activeTab} onChange={handleTabChange} label="View">
+            {Object.keys(tableConfig).map((tab) => (
+              <SelectMenuItem key={tab} value={tab}>
+                {tab}
+              </SelectMenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl variant="outlined" size="small"  sx={{ minWidth: 200 }}>
           <InputLabel>Attribute</InputLabel>
           <Select
             value={selectedAttribute}
@@ -163,20 +180,20 @@ export default function StoreTable({
         <Button variant="contained" onClick={applyFilter}>
           Apply Filter
         </Button>
-      </div>
+      </Box>
 
       <TableContainer style={{ overflowX: "auto", maxWidth: "100%" }}>
-        <Table style={{ minWidth: 800, borderCollapse: "collapse" }}>
+        <Table sx={{ minWidth: 800 }}>
           <TableHead>
             <TableRow>
               {tableConfig[activeTab].columns.map((column, index) => (
-                <TableCell 
-                  key={column.id} 
-                  style={{ 
-                    position: index === 0 ? "sticky" : "static", 
-                    left: 0, 
-                    zIndex: 1, 
-                    backgroundColor: "#fff", 
+                <TableCell
+                  key={column.id}
+                  sx={{
+                    position: index === 0 ? "sticky" : "static",
+                    left: 0,
+                    zIndex: 1,
+                    backgroundColor: "background.paper",
                     border: "1px solid #ddd",
                     whiteSpace: "nowrap",
                   }}
@@ -190,13 +207,13 @@ export default function StoreTable({
             {filteredStores.map((store) => (
               <TableRow key={store.id}>
                 {tableConfig[activeTab].columns.map((column, index) => (
-                  <TableCell 
-                    key={column.id} 
-                    style={{ 
-                      position: index === 0 ? "sticky" : "static", 
-                      left: 0, 
-                      zIndex: 1, 
-                      backgroundColor: "#fff", 
+                  <TableCell
+                    key={column.id}
+                    style={{
+                      position: index === 0 ? "sticky" : "static",
+                      left: 0,
+                      zIndex: 1,
+                      backgroundColor: "#fff",
                       border: "1px solid #ddd",
                       whiteSpace: "nowrap",
                     }}
