@@ -100,11 +100,7 @@ export default function StoreTable({
           gap: 2,
         }}
       >
-        <Badge badgeContent={totalCount} color="primary">
-          <Typography variant="h6">
-            {totalCount === 1 ? "Store" : "Stores"}
-          </Typography>
-        </Badge>
+        <Chip color="primary" avatar={<Avatar>{totalCount}</Avatar>} label={totalCount ===1 ?  "Store" : "Stores"} />
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <TextField
