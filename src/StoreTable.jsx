@@ -5,6 +5,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableSortLabel,
   TableHead,
   TableRow,
   Paper,
@@ -20,20 +21,25 @@ import {
 import { FilterList, Search } from "@mui/icons-material";
 import { tableConfig } from "./data/tableConfig";
 
-export default function StoreTable({
-  stores = [],
-  setFilters,
-  totalCount,
-}) {
+export default function StoreTable({ stores = [], setFilters, totalCount }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("location");
   const [selectedAttribute, setSelectedAttribute] = useState("");
   const [selectedValues, setSelectedValues] = useState([]);
+  const [activeFilters, setActiveFilters] = useState([]);
+
+  const [sortConfig, setSortConfig] = useState({
+    key: null, // Column key to sort by
+    direction: "none", // Sorting direction: "asc", "desc", or "none"
+  });
 
   // Handle dropdown change for tabs
   const handleTabChange = (event) => {
     setActiveTab(event.target.value);
     setSelectedAttribute(""); // Reset selected attribute when tab changes
+    setActiveFilters([]); // Clear active filters when tab changes
+    setFilters((prevFilters) => ({ ...prevFilters, attributes: {} })); // Clear global filters
+    setSortConfig({ key: null, direction: "none" }); // Reset sorting
   };
 
   const handleAttributeChange = (event) => {
@@ -44,15 +50,46 @@ export default function StoreTable({
     setSelectedValues(event.target.value);
   };
 
-  const applyFilter = () => {
+  const addFilter = () => {
+    if (selectedAttribute && selectedValues.length > 0) {
+      const newFilter = {
+        attribute: selectedAttribute,
+        values: selectedValues,
+      };
+      const updatedFilters = [...activeFilters, newFilter];
+      setActiveFilters(updatedFilters);
+
+      // Update global filters immediately
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        attributes: {
+          ...prevFilters.attributes,
+          [activeTab]: updatedFilters.reduce((acc, filter) => {
+            acc[filter.attribute] = filter.values;
+            return acc;
+          }, {}),
+        },
+      }));
+
+      // Reset dropdowns
+      setSelectedAttribute("");
+      setSelectedValues([]);
+    }
+  };
+
+  const removeFilter = (index) => {
+    const updatedFilters = activeFilters.filter((_, i) => i !== index);
+    setActiveFilters(updatedFilters);
+
+    // Update global filters immediately
     setFilters((prevFilters) => ({
       ...prevFilters,
       attributes: {
         ...prevFilters.attributes,
-        [activeTab]: {
-          ...prevFilters.attributes[activeTab],
-          [selectedAttribute]: selectedValues,
-        },
+        [activeTab]: updatedFilters.reduce((acc, filter) => {
+          acc[filter.attribute] = filter.values;
+          return acc;
+        }, {}),
       },
     }));
   };
@@ -68,6 +105,18 @@ export default function StoreTable({
     ];
   };
 
+  // Handle sorting
+  const handleSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    } else if (sortConfig.key === key && sortConfig.direction === "desc") {
+      direction = "none";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Filter the stores first
   const filteredStores = stores.filter((store) => {
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
@@ -83,13 +132,34 @@ export default function StoreTable({
         );
       if (!matchesSearch) return false;
     }
+
+    // Apply active filters
+    if (activeFilters.length > 0) {
+      const storeData = tableConfig[activeTab].getData(store);
+      return activeFilters.every((filter) =>
+        filter.values.includes(storeData[filter.attribute])
+      );
+    }
+
     return true;
+  });
+
+  // Sort the filtered stores based on the current sort configuration
+  const sortedStores = [...filteredStores].sort((a, b) => {
+    if (sortConfig.direction === "none") return 0;
+
+    const aValue = tableConfig[activeTab].getData(a)[sortConfig.key];
+    const bValue = tableConfig[activeTab].getData(b)[sortConfig.key];
+
+    if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+    if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+    return 0;
   });
 
   return (
     <Paper>
       <Box
-         sx={{
+        sx={{
           padding: 2,
           display: "flex",
           flexDirection: { xs: "column", sm: "row" },
@@ -98,8 +168,11 @@ export default function StoreTable({
           gap: 2,
         }}
       >
-        <Chip color="primary" avatar={<Avatar>{totalCount}</Avatar>} label={totalCount ===1 ?  "Store" : "Stores"} />
-
+        <Chip
+          color="primary"
+          avatar={<Avatar>{totalCount}</Avatar>}
+          label={totalCount === 1 ? "Store" : "Stores"}
+        />
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <TextField
             variant="outlined"
@@ -112,14 +185,17 @@ export default function StoreTable({
             }}
             sx={{ width: { xs: "auto", sm: "auto" } }}
           />
-          <Button
-            variant="contained"
-            startIcon={<FilterList />}
-            onClick={() => setFilters((prev) => ({ ...prev, attributes: {} }))}
-            sx={{ whiteSpace: "nowrap",  }}
-          >
-            Clear Filters
-          </Button>
+
+          <FormControl variant="outlined" size="small" sx={{ minWidth: 200 }}>
+            <InputLabel>View</InputLabel>
+            <Select value={activeTab} onChange={handleTabChange} label="View">
+              {Object.keys(tableConfig).map((tab) => (
+                <SelectMenuItem key={tab} value={tab}>
+                  {tab}
+                </SelectMenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Box>
       </Box>
 
@@ -131,17 +207,7 @@ export default function StoreTable({
           flexDirection: { xs: "column", sm: "row" },
         }}
       >
-        <FormControl variant="outlined" size="small"  sx={{ minWidth: 200 }}>
-          <InputLabel>View</InputLabel>
-          <Select value={activeTab} onChange={handleTabChange} label="View">
-            {Object.keys(tableConfig).map((tab) => (
-              <SelectMenuItem key={tab} value={tab}>
-                {tab}
-              </SelectMenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl variant="outlined" size="small"  sx={{ minWidth: 200 }}>
+        <FormControl variant="outlined" size="small" sx={{ minWidth: 200 }}>
           <InputLabel>Attribute</InputLabel>
           <Select
             value={selectedAttribute}
@@ -172,13 +238,47 @@ export default function StoreTable({
           </Select>
         </FormControl>
 
-        <Button variant="contained" onClick={applyFilter}>
-          Apply Filter
+        <Button variant="contained" onClick={addFilter}>
+          Add Filter
+        </Button>
+        <Button
+          variant="contained"
+          startIcon={<FilterList />}
+          onClick={() => {
+            // Clear global filters
+            setFilters((prev) => ({ ...prev, attributes: {} }));
+            // Clear local filters
+            setActiveFilters([]);
+            setSelectedAttribute("");
+            setSelectedValues([]);
+            // Reset sorting
+            setSortConfig({ key: null, direction: "none" });
+          }}
+          sx={{ whiteSpace: "nowrap" }}
+        >
+          Clear Filters
         </Button>
       </Box>
 
+      <Box
+        sx={{
+          padding: 2,
+          display: "flex",
+          gap: 2,
+          flexWrap: "wrap",
+        }}
+      >
+        {activeFilters.map((filter, index) => (
+          <Chip
+            key={index}
+            label={`${filter.attribute}: ${filter.values.join(", ")}`}
+            onDelete={() => removeFilter(index)}
+          />
+        ))}
+      </Box>
+
       <TableContainer style={{ overflowX: "auto", maxWidth: "100%" }}>
-        <Table sx={{ minWidth: 'auto' }}>
+        <Table sx={{ minWidth: "auto" }}>
           <TableHead>
             <TableRow>
               {tableConfig[activeTab].columns.map((column, index) => (
@@ -193,13 +293,23 @@ export default function StoreTable({
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {column.label}
+                  <TableSortLabel
+                    active={sortConfig.key === column.id}
+                    direction={
+                      sortConfig.key === column.id && sortConfig.direction !== "none"
+                        ? sortConfig.direction
+                        : "asc"
+                    }
+                    onClick={() => handleSort(column.id)}
+                  >
+                    {column.label}
+                  </TableSortLabel>
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredStores.map((store) => (
+            {sortedStores.map((store) => (
               <TableRow key={store.id}>
                 {tableConfig[activeTab].columns.map((column, index) => (
                   <TableCell
