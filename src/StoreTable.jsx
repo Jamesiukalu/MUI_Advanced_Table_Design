@@ -8,6 +8,9 @@ import {
   TableSortLabel,
   TableHead,
   TableRow,
+  ListItemText,
+  OutlinedInput,
+  Checkbox,
   Paper,
   Button,
   Chip,
@@ -16,7 +19,7 @@ import {
   Select,
   FormControl,
   InputLabel,
-  MenuItem as SelectMenuItem,
+  MenuItem
 } from "@mui/material";
 import { FilterList, Search } from "@mui/icons-material";
 import { tableConfig } from "./data/tableConfig";
@@ -47,6 +50,13 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
   };
 
   const handleFilterValueChange = (event) => {
+    // const {
+    //   target: { value },
+    // } = event;
+    // setSelectedValues(
+    //   // On autofill we get a stringified value.
+    //   typeof value === 'string' ? value.split(',') : value,
+    // );
     setSelectedValues(event.target.value);
   };
 
@@ -168,11 +178,17 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
           gap: 2,
         }}
       >
-        <Chip
-          color="primary"
-          avatar={<Avatar>{totalCount}</Avatar>}
-          label={totalCount === 1 ? "Store" : "Stores"}
-        />
+        <FormControl variant="outlined" size="small" sx={{ minWidth: 200 }}>
+          <InputLabel>View</InputLabel>
+          <Select value={activeTab} onChange={handleTabChange} label="View">
+            {Object.keys(tableConfig).map((tab) => (
+              <MenuItem key={tab} value={tab}>  
+                {tab}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <TextField
             variant="outlined"
@@ -186,16 +202,11 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
             sx={{ width: { xs: "auto", sm: "auto" } }}
           />
 
-          <FormControl variant="outlined" size="small" sx={{ minWidth: 200 }}>
-            <InputLabel>View</InputLabel>
-            <Select value={activeTab} onChange={handleTabChange} label="View">
-              {Object.keys(tableConfig).map((tab) => (
-                <SelectMenuItem key={tab} value={tab}>
-                  {tab}
-                </SelectMenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <Chip
+            color="primary"
+            avatar={<Avatar>{totalCount}</Avatar>}
+            label={totalCount === 1 ? "Store" : "Stores"}
+          />
         </Box>
       </Box>
 
@@ -215,9 +226,9 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
             label="Attribute"
           >
             {tableConfig[activeTab].columns.map((column) => (
-              <SelectMenuItem key={column.id} value={column.id}>
+              <MenuItem key={column.id} value={column.id}>
                 {column.label}
-              </SelectMenuItem>
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -225,15 +236,18 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
         <FormControl variant="outlined" size="small" style={{ minWidth: 200 }}>
           <InputLabel>Values</InputLabel>
           <Select
-            multiple
             value={selectedValues}
             onChange={handleFilterValueChange}
+            input={<OutlinedInput label="Tag" />}
+            renderValue={(selected) => selected.join(', ')}
             label="Values"
+            multiple
           >
-            {getAttributeValues().map((value) => (
-              <SelectMenuItem key={value} value={value}>
-                {value}
-              </SelectMenuItem>
+            {getAttributeValues().map((value, index) => (
+              <MenuItem key={index} value={value}>
+                <Checkbox checked={selectedValues.includes(value)} />
+                <ListItemText primary={value} />
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -296,7 +310,8 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
                   <TableSortLabel
                     active={sortConfig.key === column.id}
                     direction={
-                      sortConfig.key === column.id && sortConfig.direction !== "none"
+                      sortConfig.key === column.id &&
+                      sortConfig.direction !== "none"
                         ? sortConfig.direction
                         : "asc"
                     }
