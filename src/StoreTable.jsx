@@ -23,7 +23,7 @@ import {
   TablePagination, // Import TablePagination
 } from "@mui/material";
 import { FilterList } from "@mui/icons-material";
-import ManageSearchIcon from '@mui/icons-material/ManageSearch';
+import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import { tableConfig } from "./data/tableConfig";
 
 export default function StoreTable({ stores = [], setFilters, totalCount }) {
@@ -189,7 +189,7 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
           display: "flex",
           flexDirection: { xs: "column", sm: "row" },
           justifyContent: "space-between",
-          alignItems: { xs: "flex-start", sm: "center" },
+          // alignItems: { xs: "flex-start", sm: "center" },
           gap: 2,
         }}
       >
@@ -197,14 +197,21 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
           <InputLabel>View</InputLabel>
           <Select value={activeTab} onChange={handleTabChange} label="View">
             {Object.keys(tableConfig).map((tab) => (
-              <MenuItem key={tab} value={tab}>  
+              <MenuItem key={tab} value={tab}>
                 {tab}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
 
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            //flexDirection: { xs: "column", sm: "row" },
+            alignItems: "center",
+            gap: 2,
+          }}  
+        >
           <TextField
             variant="outlined"
             size="small"
@@ -254,7 +261,7 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
             value={selectedValues}
             onChange={handleFilterValueChange}
             input={<OutlinedInput label="Tag" />}
-            renderValue={(selected) => selected.join(', ')}
+            renderValue={(selected) => selected.join(", ")}
             label="Values"
             multiple
           >
