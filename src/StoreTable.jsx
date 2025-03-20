@@ -19,7 +19,8 @@ import {
   Select,
   FormControl,
   InputLabel,
-  MenuItem
+  MenuItem,
+  TablePagination, // Import TablePagination
 } from "@mui/material";
 import { FilterList } from "@mui/icons-material";
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
@@ -31,11 +32,14 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
   const [selectedAttribute, setSelectedAttribute] = useState("");
   const [selectedValues, setSelectedValues] = useState([]);
   const [activeFilters, setActiveFilters] = useState([]);
-
   const [sortConfig, setSortConfig] = useState({
     key: null, // Column key to sort by
     direction: "none", // Sorting direction: "asc", "desc", or "none"
   });
+
+  // Pagination state
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(6);
 
   // Handle dropdown change for tabs
   const handleTabChange = (event) => {
@@ -44,6 +48,7 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
     setActiveFilters([]); // Clear active filters when tab changes
     setFilters((prevFilters) => ({ ...prevFilters, attributes: {} })); // Clear global filters
     setSortConfig({ key: null, direction: "none" }); // Reset sorting
+    setPage(0); // Reset to the first page when tab changes
   };
 
   const handleAttributeChange = (event) => {
@@ -51,13 +56,6 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
   };
 
   const handleFilterValueChange = (event) => {
-    // const {
-    //   target: { value },
-    // } = event;
-    // setSelectedValues(
-    //   // On autofill we get a stringified value.
-    //   typeof value === 'string' ? value.split(',') : value,
-    // );
     setSelectedValues(event.target.value);
   };
 
@@ -166,6 +164,22 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
     if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
     return 0;
   });
+
+  // Pagination handlers
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  // Calculate the stores to display on the current page
+  const paginatedStores = sortedStores.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   return (
     <Paper>
@@ -325,7 +339,7 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedStores.map((store) => (
+            {paginatedStores.map((store) => (
               <TableRow key={store.id}>
                 {tableConfig[activeTab].columns.map((column, index) => (
                   <TableCell
@@ -347,6 +361,17 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Pagination */}
+      <TablePagination
+        rowsPerPageOptions={[6, 10, 25]}
+        component="div"
+        count={sortedStores.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </Paper>
   );
 }
