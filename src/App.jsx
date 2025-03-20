@@ -43,7 +43,6 @@ export default function App() {
 
   return (
     <Box sx={{ display: "flex" }}>
-      {/* Header */}
       <AppBar
         position="fixed"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -57,13 +56,7 @@ export default function App() {
           </Typography>
         </Toolbar>
       </AppBar>
-
-      {/* Main Content */}
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, p: 3, marginTop: "64px" }} // Adjust marginTop to account for AppBar
-      >
-        <Container>
+        <Container sx={{ marginTop: "64px" }} >
           <Box role="presentation" onClick={handleClick} sx={{ mb: 2 }}>
             <Breadcrumbs aria-label="breadcrumb">
               <Link
@@ -96,7 +89,6 @@ export default function App() {
             />
           </Box>
         </Container>
-      </Box>
     </Box>
   );
 }
