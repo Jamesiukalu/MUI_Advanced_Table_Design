@@ -21,7 +21,8 @@ import {
   InputLabel,
   MenuItem
 } from "@mui/material";
-import { FilterList, Search } from "@mui/icons-material";
+import { FilterList } from "@mui/icons-material";
+import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import { tableConfig } from "./data/tableConfig";
 
 export default function StoreTable({ stores = [], setFilters, totalCount }) {
@@ -197,7 +198,7 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             InputProps={{
-              startAdornment: <Search fontSize="small" />,
+              endAdornment: <ManageSearchIcon fontSize="small" />,
             }}
             sx={{ width: { xs: "auto", sm: "auto" } }}
           />
