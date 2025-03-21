@@ -11,110 +11,64 @@ import {
   ListItemText,
   OutlinedInput,
   Checkbox,
-  Paper,
-  Button,
-  Chip,
-  Avatar,
   TextField,
-  Select,
+  Button,
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Drawer,
   FormControl,
   InputLabel,
+  Select,
   MenuItem,
-  TablePagination, // Import TablePagination
+  TablePagination,
+  Paper,
 } from "@mui/material";
-import { FilterList } from "@mui/icons-material";
-import ManageSearchIcon from "@mui/icons-material/ManageSearch";
+import { ExpandMore } from "@mui/icons-material";
 import { tableConfig } from "./data/tableConfig";
 
-export default function StoreTable({ stores = [], setFilters, totalCount }) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeTab, setActiveTab] = useState("location");
-  const [selectedAttribute, setSelectedAttribute] = useState("");
-  const [selectedValues, setSelectedValues] = useState([]);
-  const [activeFilters, setActiveFilters] = useState([]);
+export default function StoreTable({ stores = [] }) {
+  const [selectedAttributes, setSelectedAttributes] = useState(["name"]); // Store Name is mandatory
   const [sortConfig, setSortConfig] = useState({
-    key: null, // Column key to sort by
-    direction: "none", // Sorting direction: "asc", "desc", or "none"
+    key: null,
+    direction: "none",
   });
-
-  // Pagination state
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(6);
+  const [rowsPerPage, setRowsPerPage] = useState(10); // Default rows per page
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [columnFilters, setColumnFilters] = useState(
+    // Initialize columnFilters with default values for all selected attributes
+    selectedAttributes.reduce((acc, attribute) => {
+      acc[attribute] = [];
+      return acc;
+    }, {})
+  );
 
-  // Handle dropdown change for tabs
-  const handleTabChange = (event) => {
-    setActiveTab(event.target.value);
-    setSelectedAttribute(""); // Reset selected attribute when tab changes
-    setActiveFilters([]); // Clear active filters when tab changes
-    setFilters((prevFilters) => ({ ...prevFilters, attributes: {} })); // Clear global filters
-    setSortConfig({ key: null, direction: "none" }); // Reset sorting
-    setPage(0); // Reset to the first page when tab changes
-  };
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
-  const handleAttributeChange = (event) => {
-    setSelectedAttribute(event.target.value);
-  };
-
-  const handleFilterValueChange = (event) => {
-    setSelectedValues(event.target.value);
-  };
-
-  const addFilter = () => {
-    if (selectedAttribute && selectedValues.length > 0) {
-      const newFilter = {
-        attribute: selectedAttribute,
-        values: selectedValues,
-      };
-      const updatedFilters = [...activeFilters, newFilter];
-      setActiveFilters(updatedFilters);
-
-      // Update global filters immediately
-      setFilters((prevFilters) => ({
+  const handleAttributeSelection = (attributeId) => {
+    const isSelected = selectedAttributes.includes(attributeId);
+    if (isSelected && attributeId !== "name") {
+      // Prevent deselecting Store Name
+      setSelectedAttributes(selectedAttributes.filter((id) => id !== attributeId));
+      // Remove the filter for the deselected attribute
+      setColumnFilters((prevFilters) => {
+        const updatedFilters = { ...prevFilters };
+        delete updatedFilters[attributeId];
+        return updatedFilters;
+      });
+    } else if (!isSelected && selectedAttributes.length < 20) {
+      setSelectedAttributes([...selectedAttributes, attributeId]);
+      // Initialize the filter for the newly selected attribute
+      setColumnFilters((prevFilters) => ({
         ...prevFilters,
-        attributes: {
-          ...prevFilters.attributes,
-          [activeTab]: updatedFilters.reduce((acc, filter) => {
-            acc[filter.attribute] = filter.values;
-            return acc;
-          }, {}),
-        },
+        [attributeId]: [],
       }));
-
-      // Reset dropdowns
-      setSelectedAttribute("");
-      setSelectedValues([]);
     }
   };
 
-  const removeFilter = (index) => {
-    const updatedFilters = activeFilters.filter((_, i) => i !== index);
-    setActiveFilters(updatedFilters);
-
-    // Update global filters immediately
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      attributes: {
-        ...prevFilters.attributes,
-        [activeTab]: updatedFilters.reduce((acc, filter) => {
-          acc[filter.attribute] = filter.values;
-          return acc;
-        }, {}),
-      },
-    }));
-  };
-
-  const getAttributeValues = () => {
-    if (!selectedAttribute) return [];
-    return [
-      ...new Set(
-        stores.map(
-          (store) => tableConfig[activeTab].getData(store)[selectedAttribute]
-        )
-      ),
-    ];
-  };
-
-  // Handle sorting
   const handleSort = (key) => {
     let direction = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
@@ -125,47 +79,20 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
     setSortConfig({ key, direction });
   };
 
-  // Filter the stores first
-  const filteredStores = stores.filter((store) => {
-    if (searchTerm) {
-      const searchLower = searchTerm.toLowerCase();
-      const matchesSearch =
-        store.name.toLowerCase().includes(searchLower) ||
-        store.status.toLowerCase().includes(searchLower) ||
-        store.province.toLowerCase().includes(searchLower) ||
-        store.region.toLowerCase().includes(searchLower) ||
-        store.location.city.toLowerCase().includes(searchLower) ||
-        store.location.address.toLowerCase().includes(searchLower) ||
-        store.salesFloor.departments.some((dept) =>
-          dept.toLowerCase().includes(searchLower)
-        );
-      if (!matchesSearch) return false;
+  const getStoreValue = (store, attributeId) => {
+    // Find the view that contains the attribute
+    const view = Object.keys(tableConfig).find((view) =>
+      tableConfig[view].columns.some((col) => col.id === attributeId)
+    );
+
+    // If the view is found, return the value; otherwise, return a default value
+    if (view) {
+      const value = tableConfig[view].getData(store)[attributeId];
+      return value !== undefined ? value.toString() : "-"; // Ensure value is a string
     }
+    return "-"; // Default value if the attribute is not found
+  };
 
-    // Apply active filters
-    if (activeFilters.length > 0) {
-      const storeData = tableConfig[activeTab].getData(store);
-      return activeFilters.every((filter) =>
-        filter.values.includes(storeData[filter.attribute])
-      );
-    }
-
-    return true;
-  });
-
-  // Sort the filtered stores based on the current sort configuration
-  const sortedStores = [...filteredStores].sort((a, b) => {
-    if (sortConfig.direction === "none") return 0;
-
-    const aValue = tableConfig[activeTab].getData(a)[sortConfig.key];
-    const bValue = tableConfig[activeTab].getData(b)[sortConfig.key];
-
-    if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
-    if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
-    return 0;
-  });
-
-  // Pagination handlers
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -175,205 +102,246 @@ export default function StoreTable({ stores = [], setFilters, totalCount }) {
     setPage(0);
   };
 
-  // Calculate the stores to display on the current page
+  const handleColumnFilterChange = (attributeId, value) => {
+    setColumnFilters((prevFilters) => ({
+      ...prevFilters,
+      [attributeId]: value,
+    }));
+  };
+
+  const filteredStores = stores.filter((store) => {
+    return selectedAttributes.every((attribute) => {
+      const filterValues = columnFilters[attribute] || [];
+      if (filterValues.length === 0) return true; // No filter applied
+      const storeValue = getStoreValue(store, attribute)?.toLowerCase() || "";
+      return filterValues.some((filterValue) =>
+        storeValue.includes(filterValue.toString().toLowerCase())
+      );
+    });
+  });
+
+  const sortedStores = [...filteredStores].sort((a, b) => {
+    if (sortConfig.direction === "none") return 0;
+
+    const aValue = getStoreValue(a, sortConfig.key);
+    const bValue = getStoreValue(b, sortConfig.key);
+
+    if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+    if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+    return 0;
+  });
+
   const paginatedStores = sortedStores.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
 
+  const filteredColumns = Object.keys(tableConfig).reduce((acc, view) => {
+    const columns = tableConfig[view].columns.filter((column) =>
+      column.label.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    if (columns.length > 0) {
+      acc[view] = columns;
+    }
+    return acc;
+  }, {});
+
+  const resetSelections = () => {
+    setSelectedAttributes(["name"]); // Reset to only storeName
+    setColumnFilters({ name: [] }); // Clear all filters except for "name"
+  };
+
   return (
     <Paper>
-      <Box
-        sx={{
-          padding: 2,
-          display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
-          justifyContent: "space-between",
-          // alignItems: { xs: "flex-start", sm: "center" },
-          gap: 2,
-        }}
+      {/* Sidebar for Attribute Selection */}
+      <Drawer
+        anchor="left"
+        open={sidebarOpen}
+        onClose={toggleSidebar}
+        sx={{ width: 400 }}
       >
-        <FormControl variant="outlined" size="small" sx={{ minWidth: 200 }}>
-          <InputLabel>View</InputLabel>
-          <Select value={activeTab} onChange={handleTabChange} label="View">
-            {Object.keys(tableConfig).map((tab) => (
-              <MenuItem key={tab} value={tab}>
-                {tab}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <Box sx={{ width: 400, p: 2, marginTop: 8 }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Select Attributes (Up to 20)
+          </Typography>
 
-        <Box
-          sx={{
-            display: "flex",
-            //flexDirection: { xs: "column", sm: "row" },
-            alignItems: "center",
-            gap: 2,
-          }}  
-        >
           <TextField
             variant="outlined"
             size="small"
-            placeholder="Search stores..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-              endAdornment: <ManageSearchIcon fontSize="small" />,
-            }}
-            sx={{ width: { xs: "auto", sm: "auto" } }}
+            placeholder="Search attributes..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            fullWidth
+            sx={{ mb: 2 }}
           />
 
-          <Chip
-            color="primary"
-            avatar={<Avatar>{totalCount}</Avatar>}
-            label={totalCount === 1 ? "Store" : "Stores"}
-          />
+          <Box sx={{ maxHeight: "calc(100vh - 200px)", overflowY: "auto" }}>
+            {Object.keys(filteredColumns).map((view) => (
+              <Accordion key={view}>
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                    {view}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {filteredColumns[view].map((column) => (
+                    <Box key={column.id} sx={{ display: "flex", alignItems: "center" }}>
+                      <Checkbox
+                        checked={selectedAttributes.includes(column.id)}
+                        onChange={() => handleAttributeSelection(column.id)}
+                        disabled={column.id === "name"} // Disable deselecting Store Name
+                      />
+                      <ListItemText primary={column.label} />
+                    </Box>
+                  ))}
+                </AccordionDetails>
+              </Accordion>
+            ))}
+          </Box>
+
+          <Typography variant="body2" sx={{ mt: 2 }}>
+            Selected: {selectedAttributes.length} / 20
+          </Typography>
+
+          <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
+            <Button variant="contained" onClick={toggleSidebar} fullWidth>
+              Apply
+            </Button>
+            <Button variant="outlined" onClick={resetSelections} fullWidth>
+              Reset
+            </Button>
+          </Box>
+        </Box>
+      </Drawer>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          justifyContent: "space-between",
+          gap: 2,
+        }}
+      >
+        {/* Main Content */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            mb: 2,
+          }}
+        >
+          <Button variant="contained" onClick={toggleSidebar}>
+            Select Attributes
+          </Button>
         </Box>
       </Box>
 
-      <Box
-        sx={{
-          padding: 2,
-          display: "flex",
-          gap: 2,
-          flexDirection: { xs: "column", sm: "row" },
-        }}
-      >
-        <FormControl variant="outlined" size="small" sx={{ minWidth: 200 }}>
-          <InputLabel>Attribute</InputLabel>
-          <Select
-            value={selectedAttribute}
-            onChange={handleAttributeChange}
-            label="Attribute"
-          >
-            {tableConfig[activeTab].columns.map((column) => (
-              <MenuItem key={column.id} value={column.id}>
-                {column.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl variant="outlined" size="small" style={{ minWidth: 200 }}>
-          <InputLabel>Values</InputLabel>
-          <Select
-            value={selectedValues}
-            onChange={handleFilterValueChange}
-            input={<OutlinedInput label="Tag" />}
-            renderValue={(selected) => selected.join(", ")}
-            label="Values"
-            multiple
-          >
-            {getAttributeValues().map((value, index) => (
-              <MenuItem key={index} value={value}>
-                <Checkbox checked={selectedValues.includes(value)} />
-                <ListItemText primary={value} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <Button variant="contained" onClick={addFilter}>
-          Add Filter
-        </Button>
-        <Button
-          variant="contained"
-          startIcon={<FilterList />}
-          onClick={() => {
-            // Clear global filters
-            setFilters((prev) => ({ ...prev, attributes: {} }));
-            // Clear local filters
-            setActiveFilters([]);
-            setSelectedAttribute("");
-            setSelectedValues([]);
-            // Reset sorting
-            setSortConfig({ key: null, direction: "none" });
-          }}
-          sx={{ whiteSpace: "nowrap" }}
-        >
-          Clear Filters
-        </Button>
-      </Box>
-
-      <Box
-        sx={{
-          padding: 2,
-          display: "flex",
-          gap: 2,
-          flexWrap: "wrap",
-        }}
-      >
-        {activeFilters.map((filter, index) => (
-          <Chip
-            key={index}
-            label={`${filter.attribute}: ${filter.values.join(", ")}`}
-            onDelete={() => removeFilter(index)}
-          />
-        ))}
-      </Box>
-
+      {/* Dynamic Table */}
       <TableContainer style={{ overflowX: "auto", maxWidth: "100%" }}>
         <Table sx={{ minWidth: "auto" }}>
           <TableHead>
             <TableRow>
-              {tableConfig[activeTab].columns.map((column, index) => (
-                <TableCell
-                  key={column.id}
-                  sx={{
-                    position: index === 0 ? "sticky" : "static",
-                    left: 0,
-                    zIndex: 1,
-                    backgroundColor: "background.paper",
-                    border: "1px solid #ddd",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  <TableSortLabel
-                    active={sortConfig.key === column.id}
-                    direction={
-                      sortConfig.key === column.id &&
-                      sortConfig.direction !== "none"
-                        ? sortConfig.direction
-                        : "asc"
-                    }
-                    onClick={() => handleSort(column.id)}
+              {selectedAttributes
+                .map((attribute) => {
+                  const column = Object.keys(tableConfig)
+                    .map((view) => tableConfig[view].columns.find((col) => col.id === attribute))
+                    .find((col) => col);
+                  return column ? { id: column.id, label: column.label } : null;
+                })
+                .filter((column) => column) // Remove null values
+                .map((column) => (
+                  <TableCell
+                    key={column.id}
+                    sx={{
+                      backgroundColor: "#eeeeee",
+                      border: "1px solid #ddd",
+                      whiteSpace: "nowrap",
+                      position: column.id === "name" ? "sticky" : "static",
+                      left: 0,
+                      zIndex: 1,
+                    }}
                   >
-                    {column.label}
-                  </TableSortLabel>
-                </TableCell>
-              ))}
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                      <TableSortLabel
+                        active={sortConfig.key === column.id}
+                        direction={
+                          sortConfig.key === column.id && sortConfig.direction !== "none"
+                            ? sortConfig.direction
+                            : "asc"
+                        }
+                        onClick={() => handleSort(column.id)}
+                      >
+                        {column.label}
+                      </TableSortLabel>
+                      {column.id !== "name" && (
+                        <FormControl variant="outlined" size="small" sx={{ width: "100%" }}>
+                          <InputLabel>Filter</InputLabel>
+                          <Select
+                            multiple
+                            value={columnFilters[column.id] || []} // Ensure value is always defined
+                            onChange={(e) => handleColumnFilterChange(column.id, e.target.value)}
+                            input={<OutlinedInput label="Filter" />}
+                            renderValue={(selected) => {
+                              // Customize the display of selected values
+                              if (selected.length === 0) {
+                                return "Filter"; // Show "Filter" when no items are selected
+                              }
+                              return `${selected.length} selected`; // Show "X selected" when items are selected
+                            }}
+                          >
+                            {[
+                              ...new Set(
+                                stores.map((store) => getStoreValue(store, column.id))
+                              ),
+                            ].map((value, index) => (
+                              <MenuItem key={index} value={value}>
+                                <Checkbox checked={columnFilters[column.id]?.includes(value)} />
+                                <ListItemText primary={value} />
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      )}
+                    </Box>
+                  </TableCell>
+                ))}
             </TableRow>
           </TableHead>
           <TableBody>
             {paginatedStores.map((store) => (
               <TableRow key={store.id}>
-                {tableConfig[activeTab].columns.map((column, index) => (
-                  <TableCell
-                    key={column.id}
-                    style={{
-                      position: index === 0 ? "sticky" : "static",
-                      left: 0,
-                      zIndex: 1,
-                      backgroundColor: "#fff",
-                      border: "1px solid #ddd",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {tableConfig[activeTab].getData(store)[column.id] || "-"}
-                  </TableCell>
-                ))}
+                {selectedAttributes
+                  .map((attribute) => {
+                    const column = Object.keys(tableConfig)
+                      .map((view) => tableConfig[view].columns.find((col) => col.id === attribute))
+                      .find((col) => col);
+                    return column ? { id: column.id, value: getStoreValue(store, column.id) } : null;
+                  })
+                  .filter((column) => column) // Remove null values
+                  .map((column) => (
+                    <TableCell
+                      key={column.id}
+                      style={{
+                        backgroundColor: "#fff",
+                        border: "1px solid #ddd",
+                        whiteSpace: "nowrap",
+                        position: column.id === "name" ? "sticky" : "static",
+                        left: 0,
+                        zIndex: 1,
+                      }}
+                    >
+                      {column.value || "-"}
+                    </TableCell>
+                  ))}
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      {/* Pagination */}
       <TablePagination
-        rowsPerPageOptions={[6, 10, 25]}
+        rowsPerPageOptions={[10, 20, 30]}
         component="div"
-        count={sortedStores.length}
+        count={filteredStores.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

@@ -150,14 +150,14 @@ const tableConfig = {
     food: {
       columns: [
         { id: "name", label: "Store Name" },
-        { id: "hasRestaurant", label: "Sushi" },
-        { id: "hasBakery", label: "Vendor" },
-        { id: "bakeryLocation", label: "Service Deli" },
-        { id: "hasDelicatessen", label: "Sushi" },
-        { id: "hasSushi", label: "Vendor" },
-        { id: "sushiVendor", label: "Service Deli" },
-        { id: "hasServiceDeli", label: "Deli HMR Screens" },
-        { id: "hasDeliHMRScreens", label: "Bakery Location" },
+        { id: "hasRestaurant", label: "Restaurant" },
+        { id: "hasBakery", label: "Bakery" },
+        { id: "bakeryLocation", label: "Bakery Location" },
+        { id: "hasDelicatessen", label: "Delicates" },
+        { id: "hasSushi", label: "Sushi" },
+        { id: "sushiVendor", label: "Sushi Vendor" },
+        { id: "hasServiceDeli", label: "Service Deli" },
+        { id: "hasDeliHMRScreens", label: "Deli HMR Screens" },
         {id: "specialtyFoods", label: "Specialty Foods"},
       ],
       getData: (store) => ({
