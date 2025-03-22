@@ -4,48 +4,26 @@ import rem from '../../../helpers/PixelToRem';
 
 const MapAttributes = ({ data, deptData }) => {
   return (
-    <>
-      <div>
-        <Box
-          sx={{
-            marginLeft: '2%',
-            marginBottom: '5%',
-            display: 'flex',
-            textAlign: 'center',
-            alignItems: 'self-start',
-          }}
-        >
+    <Box sx={{ padding: '0 2%' }}>
+      {/* Building Information Section */}
+      <Box sx={{ marginBottom: '5%' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '2%' }}>
           <img
             src="/icons/building.svg"
             alt="Building Information"
             width={30}
-            style={{ paddingRight: '5px' }}
+            style={{ marginRight: '5px' }}
           />
-          <Typography
-            sx={{
-              color: '#0071DC',
-              textAlign: 'center',
-            }}
-          >
+          <Typography variant="h6" sx={{ color: '#0071DC' }}>
             Building Information
           </Typography>
         </Box>
         <Box
           sx={{
-            width: '100%',
-            height: 170,
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
             gap: '18px 10px',
-            padding: '10px 0px 0px',
-            '@media (min-width: 768px) and (max-width: 900px)': {
-              gridTemplateColumns: 'repeat(2, 1fr)',
-            },
-            '@media (max-width: 480px)': {
-              gridTemplateColumns: 'repeat(2, 1fr)',
-              width: '23rem',
-              marginLeft: '2%',
-            },
+            padding: '10px 0',
           }}
         >
           {data?.map((card, index) => (
@@ -56,122 +34,73 @@ const MapAttributes = ({ data, deptData }) => {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                padding: '0px 5px',
+                padding: '10px',
                 borderRadius: '15px',
-                border: '2px solid var(--Gray-Tone-1, #909196)',
-                // background: 'var(--Background-Primary, #f5f3f0)',
+                border: '2px solid #909196',
                 boxShadow: 'none',
-                alignSelf: 'stretch',
               }}
             >
-              <Box
+              <Typography
+                variant="body2"
                 sx={{
-                  display: 'flex',
-                  gap: '5px',
-                  borderRadius: '15px',
-                  marginBottom: '-5px',
-                  marginTop: '5px',
-                  overflow: 'hidden',
-                  whiteSpace: 'wrap',
-                  textOverflow: 'ellipsis',
+                  color: '#000',
+                  fontFamily: 'Bogle',
+                  fontSize: rem(13),
+                  fontWeight: 300,
+                  lineHeight: '28px',
                   textAlign: 'center',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
                 }}
               >
-                <Typography
-                  align="center"
-                  sx={{
-                    color: 'var(--black-100, #000)',
-                    fontFamily: 'Bogle',
-                    fontSize: rem(13),
-                    fontWeight: 300,
-                    lineHeight: '28px',
-                    marginBottom: '10px',
-                    overflow: 'hidden',
-                    whiteSpace: 'wrap',
-                    textOverflow: 'ellipsis',
-                    textAlign: 'center',
-                  }}
-                >
-                  {card.label ? card.label : 'Not Available'}
-                </Typography>
-              </Box>
+                {card.label || 'Not Available'}
+              </Typography>
               <Box
                 sx={{
                   width: '100%',
                   height: '1px',
                   backgroundColor: '#A9A9A9',
-                  marginBottom: '10px',
+                  margin: '10px 0',
                 }}
               />
-              <Box
+              <Typography
+                variant="body2"
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: '.3rem',
+                  color: '#0071DC',
+                  fontFamily: 'Bogle',
+                  fontSize: rem(13),
+                  fontWeight: 300,
+                  lineHeight: '28px',
+                  textAlign: 'center',
                 }}
               >
-                {'  '}
-                <Typography
-                  align="center"
-                  sx={{
-                    color: 'var(--Walmart-Blue, #0071DC)',
-                    fontFamily: 'Bogle',
-                    fontSize: rem(13),
-                    fontWeight: 300,
-                    lineHeight: '28px',
-                    alignSelf: 'stretch',
-                    alignItems: 'center',
-                  }}
-                >
-                  {card.value ? card.value : 'Not Available'}
-                </Typography>
-              </Box>
+                {card.value || 'Not Available'}
+              </Typography>
             </Card>
           ))}
         </Box>
+      </Box>
 
-        <Box
-          sx={{
-            marginTop: '15%',
-            marginLeft: '2%',
-            marginBottom: '5%',
-            display: 'flex',
-            textAlign: 'center',
-            alignItems: 'self-start',
-          }}
-        >
+      {/* Department Information Section */}
+      <Box sx={{ marginTop: '15%' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '2%' }}>
           <img
             src="/icons/dept.svg"
             alt="Department Information"
             width={30}
-            style={{ paddingRight: '5px' }}
+            style={{ marginRight: '5px' }}
           />
-          <Typography
-            sx={{
-              color: '#0071DC',
-              textAlign: 'center',
-            }}
-          >
+          <Typography variant="h6" sx={{ color: '#0071DC' }}>
             Department Information
           </Typography>
         </Box>
         <Box
           sx={{
-            width: 260,
-            height: 190,
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
             gap: '18px 10px',
-            padding: '10px 0px 0px',
-            '@media (min-width: 768px) and (max-width: 900px)': {
-              gridTemplateColumns: 'repeat(2, 1fr)',
-            },
-            '@media (max-width: 480px)': {
-              gridTemplateColumns: 'repeat(2, 1fr)',
-              width: '23rem',
-              marginLeft: '2%',
-            },
+            padding: '10px 0',
           }}
         >
           {deptData?.map((card, index) => (
@@ -182,83 +111,54 @@ const MapAttributes = ({ data, deptData }) => {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                padding: '5px 5px',
+                padding: '10px',
                 borderRadius: '15px',
-                border: '2px solid var(--Gray-Tone-1, #909196)',
-                // background: 'var(--Background-Primary, #f5f3f0)',
+                border: '2px solid #909196',
                 boxShadow: 'none',
-                alignSelf: 'stretch',
               }}
             >
-              <Box
+              <Typography
+                variant="body2"
                 sx={{
-                  display: 'flex',
-                  gap: '5px',
-                  borderRadius: '15px',
-                  marginBottom: '-5px',
-                  marginTop: '5px',
-                  overflow: 'hidden',
-                  whiteSpace: 'wrap',
-                  textOverflow: 'ellipsis',
+                  color: '#000',
+                  fontFamily: 'Bogle',
+                  fontSize: rem(13),
+                  fontWeight: 300,
+                  lineHeight: '28px',
                   textAlign: 'center',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
                 }}
               >
-                <Typography
-                  align="center"
-                  sx={{
-                    color: 'var(--black-100, #000)',
-                    fontFamily: 'Bogle',
-                    fontSize: rem(13),
-                    textAlign: 'center',
-                    fontWeight: 300,
-                    lineHeight: '28px',
-                    marginBottom: '10px',
-                    overflow: 'hidden',
-                    whiteSpace: 'wrap',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {card.label ? card.label : 'Not Available'}
-                </Typography>
-              </Box>
+                {card.label || 'Not Available'}
+              </Typography>
               <Box
                 sx={{
                   width: '100%',
                   height: '1px',
                   backgroundColor: '#A9A9A9',
-                  marginBottom: '10px',
-                  textAlign: 'center',
+                  margin: '10px 0',
                 }}
               />
-              <Box
+              <Typography
+                variant="body2"
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: '.3rem',
+                  color: '#0071DC',
+                  fontFamily: 'Bogle',
+                  fontSize: rem(13),
+                  fontWeight: 300,
+                  lineHeight: '28px',
+                  textAlign: 'center',
                 }}
               >
-                {'  '}
-                <Typography
-                  align="center"
-                  sx={{
-                    color: 'var(--Walmart-Blue, #0071DC)',
-                    fontFamily: 'Bogle',
-                    fontSize: rem(13),
-                    textAlign: 'center',
-                    fontWeight: 300,
-                    lineHeight: '28px',
-                    alignSelf: 'stretch',
-                  }}
-                >
-                  {card.value ? card.value : 'Not Available'}
-                </Typography>
-              </Box>
+                {card.value || 'Not Available'}
+              </Typography>
             </Card>
           ))}
         </Box>
-      </div>
-    </>
+      </Box>
+    </Box>
   );
 };
 
