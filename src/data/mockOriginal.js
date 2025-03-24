@@ -2,7 +2,7 @@
     "Location": [
       {
         "id": "1113",
-        "Store": "1113 - ABBOTSFORD W, BC",
+        "Store": "1000-MILTON, ON",
         "Province": "British Columbia",
         "WM Region": "1 - -WESTERN CANADA",
         "Store Status": "Active",

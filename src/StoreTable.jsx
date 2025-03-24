@@ -257,7 +257,7 @@ export default function StoreTable({ stores = [] }) {
                       whiteSpace: "nowrap",
                       position: column.id === "name" ? "sticky" : "static",
                       left: 0,
-                      zIndex: 1,
+                      zIndex: 10,
                     }}
                   >
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>

@@ -1,7 +1,7 @@
 export const mockStores = [
   {
     id: "9",
-    name: "1009",
+    name: "1113-ABBOTSFORD W, BC",
     status: "Active",
     province: "Ontario",
     region: "2",
@@ -143,7 +143,7 @@ export const mockStores = [
   },
   {
     id: "11",
-    name: "1011",
+    name: "1000-MILTON, ON",
     status: "Inactive",
     province: "Alberta",
     region: "3",
@@ -278,7 +278,7 @@ export const mockStores = [
   },
   {
     id: "3",
-    name: "1001",
+    name: "1000-MILTON, ON",
     status: "Active",
     province: "British Columbia",
     region: "1",
@@ -418,7 +418,7 @@ export const mockStores = [
   },
   {
     id: "1",
-    name: "1003",
+    name: "1000-MILTON, ON",
     status: "Active",
     province: "Ontario",
     region: "Eastern",
@@ -474,7 +474,7 @@ export const mockStores = [
   },
   {
     id: "2",
-    name: "1002",
+    name: "1000-MILTON, ON",
     status: "Active",
     province: "Quebec",
     region: "Western",
@@ -530,7 +530,7 @@ export const mockStores = [
   },
   {
     id: "4",
-    name: "1004",
+    name: "1000-MILTON, ON",
     status: "Active",
     province: "Alberta",
     region: "Southern",
@@ -598,7 +598,7 @@ export const mockStores = [
   },
   {
     id: "5",
-    name: "1005",
+    name: "1000-MILTON, ON",
     status: "Inactive",
     province: "Manitoba",
     region: "Central",
