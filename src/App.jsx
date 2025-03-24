@@ -2,9 +2,8 @@ import React, { useState, useMemo } from "react";
 import { mockStores } from "./data/mockStores";
 import StoreTable from "./StoreTable";
 import {
-  Container,
-  Typography,
   Box,
+  Typography,
   AppBar,
   Toolbar,
   IconButton,
@@ -19,10 +18,12 @@ export default function App() {
   const [filters, setFilters] = useState({
     attributes: {}, // Tab-specific filters
   });
+  
   function handleClick(event) {
     event.preventDefault();
     console.info('You clicked a breadcrumb.');
   }
+
   // Filter stores based on selected filters
   const filteredStores = useMemo(() => {
     return mockStores.filter((store) => {
@@ -42,21 +43,33 @@ export default function App() {
   }, [filters]);
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <AppBar
-        position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <Toolbar>
-          <IconButton color="inherit" edge="start" sx={{ mr: 2 }}>
-            <SnippetFolderIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Store IQ Portfolio Prototype
-          </Typography>
-        </Toolbar>
-      </AppBar>
-        <Container sx={{ marginTop: "64px" }} >
+    <>
+      <Box sx={{ display: "flex" }}>
+        <AppBar
+          position="fixed"
+          sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        >
+          <Toolbar>
+            <IconButton color="inherit" edge="start" sx={{ mr: 2 }}>
+              <SnippetFolderIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap component="div">
+              Store IQ Portfolio Prototype
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        
+        {/* Replaced Container with Box and added proper styling */}
+        <Box 
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            width: '100%',
+            marginTop: '64px',
+            maxWidth: 'none'
+          }}
+        >
           <Box role="presentation" onClick={handleClick} sx={{ mb: 2 }}>
             <Breadcrumbs aria-label="breadcrumb">
               <Link
@@ -80,7 +93,7 @@ export default function App() {
               </Typography>
             </Breadcrumbs>
           </Box>
-          <Box style={{ maxHeight: "calc(100vh - 120px)" }}>
+          <Box>
             <StoreTable
               stores={filteredStores}
               filters={filters}
@@ -88,7 +101,8 @@ export default function App() {
               totalCount={filteredStores.length}
             />
           </Box>
-        </Container>
-    </Box>
+        </Box>
+      </Box>
+    </>
   );
 }
