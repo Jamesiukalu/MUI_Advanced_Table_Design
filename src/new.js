@@ -1,242 +1,874 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { AuthContext } from '../../app/AuthContext';
-import ProfitAndLoss from './ProfitAndLoss';
-import { useParams } from 'react-router-dom';
-import { getPnl, getStoreById } from '../../api';
+/>
+</span>
+<span
+  class="MuiTypography-root MuiTypography-body1  MuiFormControlLabel-label  css-1edfpdg-MuiTypography-root"
+>
+  Detailed Overview
+</span>
+</label>
+</h5>
+<div
+class="MuiBox-root css-u5yl20"
+>
+<p
+class="MuiTypography-root MuiTypography-body2  css-1qpi4wl-MuiTypography-root"
+>
+Comparison Indicators:
+</p>
+<div
+class="MuiBox-root css-egmpzt"
+>
+<svg
+  aria-hidden="true"
+  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium  css-1u2klq-MuiSvgIcon-root"
+  data-testid="ArrowDropUpIcon"
+  focusable="false"
+  viewBox="0 0 24 24"
+>
+  <path
+    d="m7 14 5-5 5 5z"
+  />
+</svg>
+<p
+  class="MuiTypography-root MuiTypography-body2  css-1nmqws6-MuiTypography-root"
+>
+  Store value is higher than market
 
-// Mock the necessary modules
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: jest.fn(),
-}));
+</p>
+</div>
+<div
+class="MuiBox-root css-axw7ok"
+>
+<svg
+  aria-hidden="true"
+  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium  css-6modce-MuiSvgIcon-root"
+  data-testid="ArrowDropDownIcon"
+  focusable="false"
+  viewBox="0 0 24 24"
+>
+  <path
+    d="m7 10 5 5 5-5z"
+  />
+</svg>
+<p
+  class="MuiTypography-root MuiTypography-body2  css-1nmqws6-MuiTypography-root"
+>
+  Store value is lower than market
 
-jest.mock('../../api/finance', () => ({
-  getPnl: jest.fn(),
-}));
+</p>
+</div>
+</div>
+<div
+class="MuiGrid2-root MuiGrid2-container MuiGrid2-direction-xs-row MuiGrid2-spacing-xs-2  css-16m4wkv-MuiGrid2-root"
+>
+<div
+class="MuiGrid2-root MuiGrid2-direction-xs-row  css-1fzlhpv-MuiGrid2-root"
+md="6"
+xs="12"
+>
+<div
+  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1  MuiCard-root  css-1lav1b5-MuiPaper-root-MuiCard-root"
+  style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"
+>
+  <p
+    class="MuiTypography-root MuiTypography-body1  css-9rafx9-MuiTypography-root"
+  >
+    Sales
+  </p>
+  <div
+    class="MuiCardContent-root  css-46bh2p-MuiCardContent-root"
+  >
+    <div
+      class="MuiGrid2-root MuiGrid2-container MuiGrid2-direction-xs-row MuiGrid2-spacing-xs-3  css-e9a930-MuiGrid2-root"  
+    >
+      <div
+        class="MuiGrid2-root MuiGrid2-direction-xs-row  css-1fzlhpv-MuiGrid2-root"
+        xs="6"
+      >
+        <h6
+          class="MuiTypography-root MuiTypography-h6  css-tglbhk-MuiTypography-root"
+        >
+          Store:
+        </h6>
+        <div
+          class="MuiBox-root css-dg598o"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body1  css-98054b-MuiTypography-root"
+          >
+            $
+          </p>
+          <p
+            class="MuiTypography-root MuiTypography-body1  css-1qq3fcx-MuiTypography-root"
+          ...
 
-jest.mock('../../api/stores', () => ({
-  getStoreById: jest.fn(),
-}));
+91 |     await waitFor(() => {
+92 |       expect(getPnl).toHaveBeenCalledWith(undefined, undefined, mockStoreId);
+> 93 |       expect(getPnl).toHaveBeenCalledWith(undefined, 'Test Market', undefined);
+|                      ^
+94 |       expect(getStoreById).toHaveBeenCalledWith(mockStoreId);
+95 |     });
+96 |   });
 
-// Mock child components
-jest.mock('../common/PageHeader', () => () => <div>PageHeader Mock</div>);
-jest.mock('../common/Loading', () => () => <div>Loading Mock</div>);
+at src/pages/performance/ProfitAndLoss.test.js:93:22
+at runWithExpensiveErrorDiagnosticsDisabled (node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/config.js:47:12)
+at checkCallback (node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:127:77)
+at checkRealTimersCallback (node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:121:16)
+at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:516:19)
 
-describe('ProfitAndLoss Component', () => {
-  const mockAuthContext = {
-    isLoading: false,
-    setIsLoading: jest.fn(),
-  };
+● ProfitAndLoss Component › expands and collapses NRE and RE sections
 
-  const mockStoreId = '123';
-  const mockStoreDetails = {
-    Gross_Area_Quantity: 1000,
-    Market: 'Test Market',
-  };
+Unable to find an element with the text: View More, which matches selector 'a'. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
 
-  const mockPnlData = [
-    {
-      Store: '123',
-      Metric: 'NetSales',
-      Fiscal_Year: 2023,
-      Value: '100000',
-      YTD: '50000',
-    },
-    // Add more mock data as needed
-  ];
+Ignored nodes: comments, script, style
+<body>
+<div>
+<div>
+PageHeader Mock
+</div>
+<div
+class="MuiBox-root css-a79foq"
+>
+<div
+class="MuiBox-root css-18bxxuj"
+>
+<h5
+class="MuiTypography-root MuiTypography-h5  css-13cxg7c-MuiTypography-root"
+>
+Store Profit and Loss Metrics
+<label
+class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd  css-sp39m6-MuiFormControlLabel-root"
+>
+<span
+class="MuiSwitch-root MuiSwitch-sizeMedium  css-julti5-MuiSwitch-root"
+>
+<span
+  class="MuiButtonBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary   PrivateSwitchBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary   css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase"
+>
+  <input
+    class="PrivateSwitchBase-input MuiSwitch-input   css-1m9pwf3"
+    type="checkbox"
+  />
+  <span
+    class="MuiSwitch-thumb  css-jsexje-MuiSwitch-thumb"
+  />
+</span>
+<span
+  class="MuiSwitch-track  css-1yjjitx-MuiSwitch-track"
+/>
+</span>
+<span
+class="MuiTypography-root MuiTypography-body1  MuiFormControlLabel-label  css-1edfpdg-MuiTypography-root"
+>
+Detailed Overview
+</span>
+</label>
+</h5>
+<div
+class="MuiBox-root css-u5yl20"
+>
+<p
+class="MuiTypography-root MuiTypography-body2  css-1qpi4wl-MuiTypography-root"
+>
+Comparison Indicators:
+</p>
+<div
+class="MuiBox-root css-egmpzt"
+>
+<svg
+aria-hidden="true"
+class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium  css-1u2klq-MuiSvgIcon-root"
+data-testid="ArrowDropUpIcon"
+focusable="false"
+viewBox="0 0 24 24"
+>
+<path
+  d="m7 14 5-5 5 5z"
+/>
+</svg>
+<p
+class="MuiTypography-root MuiTypography-body2  css-1nmqws6-MuiTypography-root"
+>
+Store value is higher than market
 
-  const mockMarketData = [
-    {
-      Store: '456',
-      Metric: 'NetSales',
-      Fiscal_Year: 2023,
-      Value: '120000',
-      YTD: '60000',
-    },
-    // Add more mock data as needed
-  ];
+</p>
+</div>
+<div
+class="MuiBox-root css-axw7ok"
+>
+<svg
+aria-hidden="true"
+class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium  css-6modce-MuiSvgIcon-root"
+data-testid="ArrowDropDownIcon"
+focusable="false"
+viewBox="0 0 24 24"
+>
+<path
+  d="m7 10 5 5 5-5z"
+/>
+</svg>
+<p
+class="MuiTypography-root MuiTypography-body2  css-1nmqws6-MuiTypography-root"
+>
+Store value is lower than market
 
-  beforeEach(() => {
-    useParams.mockReturnValue({ storeId: mockStoreId });
-    getPnl.mockImplementation((_, market, storeId) => {
-      if (market) return Promise.resolve(mockMarketData);
-      if (storeId) return Promise.resolve(mockPnlData);
-      return Promise.resolve([]);
-    });
-    getStoreById.mockResolvedValue(mockStoreDetails);
-  });
+</p>
+</div>
+</div>
+<div
+class="MuiGrid2-root MuiGrid2-container MuiGrid2-direction-xs-row MuiGrid2-spacing-xs-2  css-16m4wkv-MuiGrid2-root"
+>
+<div
+class="MuiGrid2-root MuiGrid2-direction-xs-row  css-1fzlhpv-MuiGrid2-root"
+md="6"
+xs="12"
+>
+<div
+class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1  MuiCard-root  css-1lav1b5-MuiPaper-root-MuiCard-root"
+style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"
+>
+<p
+  class="MuiTypography-root MuiTypography-body1  css-9rafx9-MuiTypography-root"
+>
+  Sales
+</p>
+<div
+  class="MuiCardContent-root  css-46bh2p-MuiCardContent-root"
+>
+  <div
+    class="MuiGrid2-root MuiGrid2-container MuiGrid2-direction-xs-row MuiGrid2-spacing-xs-3  css-e9a930-MuiGrid2-root"    
+  >
+    <div
+      class="MuiGrid2-root MuiGrid2-direction-xs-row  css-1fzlhpv-MuiGrid2-root"
+      xs="6"
+    >
+      <h6
+        class="MuiTypography-root MuiTypography-h6  css-tglbhk-MuiTypography-root"
+      >
+        Store:
+      </h6>
+      <div
+        class="MuiBox-root css-dg598o"
+      >
+        <p
+          class="MuiTypography-root MuiTypography-body1  css-98054b-MuiTypography-root"
+        >
+          $
+        </p>
+        <p
+          class="MuiTypography-root MuiTypography-body1  css-1qq3fcx-MuiTypography-root"
+        >
+          $0.00
+        </p>
+      </div>
+      <div
+        class="MuiBox-root css-dg598o"
+      >
+        <p
+    ...
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+132 |     );
+133 |
+> 134 |     await waitFor(() => {
+|                  ^
+135 |       const nreLink = screen.getByText('View More', { selector: 'a' });
+136 |       fireEvent.click(nreLink);
+137 |       expect(screen.getByText('View Less')).toBeInTheDocument();
 
-  it('renders loading state when isLoading is true', () => {
-    render(
-      <AuthContext.Provider value={{ ...mockAuthContext, isLoading: true }}>
-        <ProfitAndLoss />
-      </AuthContext.Provider>
-    );
-    expect(screen.getByText('Loading Mock')).toBeInTheDocument();
-  });
+at waitForWrapper (node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:166:27)
+at call (src/pages/performance/ProfitAndLoss.test.js:134:18)
+at tryCatch (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at Generator._invoke (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at Generator.next (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at asyncGeneratorStep (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at _next (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at src/pages/performance/ProfitAndLoss.test.js:2:1
+at Object.<anonymous> (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at TestScheduler.scheduleTests (node_modules/@jest/core/build/TestScheduler.js:333:13)
+at runJest (node_modules/@jest/core/build/runJest.js:404:19)
+at _run10000 (node_modules/@jest/core/build/cli/index.js:320:7)
+at runCLI (node_modules/@jest/core/build/cli/index.js:173:3)
 
-  it('fetches data on mount', async () => {
-    render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <ProfitAndLoss />
-      </AuthContext.Provider>
-    );
+● ProfitAndLoss Component › handles year change
 
-    await waitFor(() => {
-      expect(getPnl).toHaveBeenCalledWith(undefined, undefined, mockStoreId);
-      expect(getPnl).toHaveBeenCalledWith(undefined, 'Test Market', undefined);
-      expect(getStoreById).toHaveBeenCalledWith(mockStoreId);
-    });
-  });
+Unable to find role="combobox"
 
-  it('renders the component with card view by default', async () => {
-    render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <ProfitAndLoss />
-      </AuthContext.Provider>
-    );
+Ignored nodes: comments, script, style
+<body>
+<div>
+<div>
+PageHeader Mock
+</div>
+<div
+class="MuiBox-root css-a79foq"
+>
+<div
+class="MuiBox-root css-18bxxuj"
+>
+<h5
+class="MuiTypography-root MuiTypography-h5  css-13cxg7c-MuiTypography-root"
+>
+Store Profit and Loss Metrics
+<label
+class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd  css-sp39m6-MuiFormControlLabel-root"
+>
+<span
+class="MuiSwitch-root MuiSwitch-sizeMedium  css-julti5-MuiSwitch-root"
+>
+<span
+  class="MuiButtonBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary   PrivateSwitchBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary   css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase"
+>
+  <input
+    class="PrivateSwitchBase-input MuiSwitch-input   css-1m9pwf3"
+    type="checkbox"
+  />
+  <span
+    class="MuiSwitch-thumb  css-jsexje-MuiSwitch-thumb"
+  />
+</span>
+<span
+  class="MuiSwitch-track  css-1yjjitx-MuiSwitch-track"
+/>
+</span>
+<span
+class="MuiTypography-root MuiTypography-body1  MuiFormControlLabel-label  css-1edfpdg-MuiTypography-root"
+>
+Detailed Overview
+</span>
+</label>
+</h5>
+<div
+class="MuiBox-root css-u5yl20"
+>
+<p
+class="MuiTypography-root MuiTypography-body2  css-1qpi4wl-MuiTypography-root"
+>
+Comparison Indicators:
+</p>
+<div
+class="MuiBox-root css-egmpzt"
+>
+<svg
+aria-hidden="true"
+class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium  css-1u2klq-MuiSvgIcon-root"
+data-testid="ArrowDropUpIcon"
+focusable="false"
+viewBox="0 0 24 24"
+>
+<path
+  d="m7 14 5-5 5 5z"
+/>
+</svg>
+<p
+class="MuiTypography-root MuiTypography-body2  css-1nmqws6-MuiTypography-root"
+>
+Store value is higher than market
 
-    await waitFor(() => {
-      expect(screen.getByText('Store Profit and Loss Metrics')).toBeInTheDocument();
-      expect(screen.getByText('Comparison Indicators:')).toBeInTheDocument();
-      expect(screen.getByText('Sales')).toBeInTheDocument();
-      expect(screen.getByText('Gross Profit')).toBeInTheDocument();
-    });
-  });
+</p>
+</div>
+<div
+class="MuiBox-root css-axw7ok"
+>
+<svg
+aria-hidden="true"
+class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium  css-6modce-MuiSvgIcon-root"
+data-testid="ArrowDropDownIcon"
+focusable="false"
+viewBox="0 0 24 24"
+>
+<path
+  d="m7 10 5 5 5-5z"
+/>
+</svg>
+<p
+class="MuiTypography-root MuiTypography-body2  css-1nmqws6-MuiTypography-root"
+>
+Store value is lower than market
 
-  it('switches between card and table view', async () => {
-    render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <ProfitAndLoss />
-      </AuthContext.Provider>
-    );
+</p>
+</div>
+</div>
+<div
+class="MuiGrid2-root MuiGrid2-container MuiGrid2-direction-xs-row MuiGrid2-spacing-xs-2  css-16m4wkv-MuiGrid2-root"
+>
+<div
+class="MuiGrid2-root MuiGrid2-direction-xs-row  css-1fzlhpv-MuiGrid2-root"
+md="6"
+xs="12"
+>
+<div
+class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1  MuiCard-root  css-1lav1b5-MuiPaper-root-MuiCard-root"
+style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"
+>
+<p
+  class="MuiTypography-root MuiTypography-body1  css-9rafx9-MuiTypography-root"
+>
+  Sales
+</p>
+<div
+  class="MuiCardContent-root  css-46bh2p-MuiCardContent-root"
+>
+  <div
+    class="MuiGrid2-root MuiGrid2-container MuiGrid2-direction-xs-row MuiGrid2-spacing-xs-3  css-e9a930-MuiGrid2-root"    
+  >
+    <div
+      class="MuiGrid2-root MuiGrid2-direction-xs-row  css-1fzlhpv-MuiGrid2-root"
+      xs="6"
+    >
+      <h6
+        class="MuiTypography-root MuiTypography-h6  css-tglbhk-MuiTypography-root"
+      >
+        Store:
+      </h6>
+      <div
+        class="MuiBox-root css-dg598o"
+      >
+        <p
+          class="MuiTypography-root MuiTypography-body1  css-98054b-MuiTypography-root"
+        >
+          $
+        </p>
+        <p
+          class="MuiTypography-root MuiTypography-body1  css-1qq3fcx-MuiTypography-root"
+        >
+          $0.00
+        </p>
+      </div>
+      <div
+        class="MuiBox-root css-dg598o"
+      >
+        <p
+    ...
 
-    await waitFor(() => {
-      const switchInput = screen.getByRole('checkbox');
-      fireEvent.click(switchInput);
-      expect(screen.getByText('High Level Summary')).toBeInTheDocument();
-    });
-  });
+146 |     );
+147 |
+> 148 |     await waitFor(() => {
+|                  ^
+149 |       // Mock the PageHeader's year change handler
+150 |       const yearSelect = screen.getByRole('combobox');
+151 |       fireEvent.change(yearSelect, { target: { value: '2022' } });
 
-  it('expands and collapses NRE and RE sections', async () => {
-    render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <ProfitAndLoss />
-      </AuthContext.Provider>
-    );
+at waitForWrapper (node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:166:27)
+at call (src/pages/performance/ProfitAndLoss.test.js:148:18)
+at tryCatch (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at Generator._invoke (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at Generator.next (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at asyncGeneratorStep (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at _next (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at src/pages/performance/ProfitAndLoss.test.js:2:1
+at Object.<anonymous> (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at TestScheduler.scheduleTests (node_modules/@jest/core/build/TestScheduler.js:333:13)
+at runJest (node_modules/@jest/core/build/runJest.js:404:19)
+at _run10000 (node_modules/@jest/core/build/cli/index.js:320:7)
+at runCLI (node_modules/@jest/core/build/cli/index.js:173:3)
 
-    await waitFor(() => {
-      const nreLink = screen.getByText('View More', { selector: 'a' });
-      fireEvent.click(nreLink);
-      expect(screen.getByText('View Less')).toBeInTheDocument();
-    });
-  });
+● ProfitAndLoss Component › handles error state when data is not available
 
-  it('handles year change', async () => {
-    render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <ProfitAndLoss />
-      </AuthContext.Provider>
-    );
+Found multiple elements with the text: /N\/A|0/
 
-    await waitFor(() => {
-      // Mock the PageHeader's year change handler
-      const yearSelect = screen.getByRole('combobox');
-      fireEvent.change(yearSelect, { target: { value: '2022' } });
-      // Add assertions for year change behavior
-    });
-  });
+Here are the matching elements:
 
-  it('displays correct arrow icons based on comparison', async () => {
-    // Mock data where store value is higher than market
-    const highStoreData = [
-      {
-        Store: '123',
-        Metric: 'NetSales',
-        Fiscal_Year: 2023,
-        Value: '150000',
-        YTD: '75000',
-      },
-    ];
+Ignored nodes: comments, script, style
+<p
+class="MuiTypography-root MuiTypography-body1  css-1qq3fcx-MuiTypography-root"
+>
+N/A
+</p>
 
-    const lowMarketData = [
-      {
-        Store: '456',
-        Metric: 'NetSales',
-        Fiscal_Year: 2023,
-        Value: '100000',
-        YTD: '50000',
-      },
-    ];
+Ignored nodes: comments, script, style
+<p
+class="MuiTypography-root MuiTypography-body1  css-1qq3fcx-MuiTypography-root"
+>
+N/A
+</p>
 
-    getPnl.mockImplementation((_, market) => {
-      if (market) return Promise.resolve(lowMarketData);
-      return Promise.resolve(highStoreData);
-    });
+Ignored nodes: comments, script, style
+<p
+class="MuiTypography-root MuiTypography-body1  css-1qq3fcx-MuiTypography-root"
+>
+N/A
+</p>
 
-    render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <ProfitAndLoss />
-      </AuthContext.Provider>
-    );
+Ignored nodes: comments, script, style
+<p
+class="MuiTypography-root MuiTypography-body1  css-1qq3fcx-MuiTypography-root"
+>
+N/A
+</p>
 
-    await waitFor(() => {
-      // Should show up arrow for store (green) and down arrow for market (red)
-      const upArrows = screen.getAllByTestId('ArrowDropUpIcon');
-      const downArrows = screen.getAllByTestId('ArrowDropDownIcon');
-      expect(upArrows.length).toBeGreaterThan(0);
-      expect(downArrows.length).toBeGreaterThan(0);
-    });
-  });
+Ignored nodes: comments, script, style
+<p
+class="MuiTypography-root MuiTypography-body1  css-1qq3fcx-MuiTypography-root"
+>
+N/A
+</p>
 
-  it('handles error state when data is not available', async () => {
-    getPnl.mockResolvedValue([]);
-    getStoreById.mockResolvedValue({});
+Ignored nodes: comments, script, style
+<p
+class="MuiTypography-root MuiTypography-body1  css-1qq3fcx-MuiTypography-root"
+>
+N/A
+</p>
 
-    render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <ProfitAndLoss />
-      </AuthContext.Provider>
-    );
+Ignored nodes: comments, script, style
+<p
+class="MuiTypography-root MuiTypography-body1  css-1qq3fcx-MuiTypography-root"
+>
+N/A
+</p>
 
-    await waitFor(() => {
-      expect(screen.getByText(/N\/A|0/)).toBeInTheDocument();
-    });
-  });
+Ignored nodes: comments, script, style
+<p
+class="MuiTypography-root MuiTypography-body1  css-1qq3fcx-MuiTypography-root"
+>
+N/A
+</p>
 
-  it('formats percentage values correctly', async () => {
-    render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <ProfitAndLoss />
-      </AuthContext.Provider>
-    );
+Ignored nodes: comments, script, style
+<p
+class="MuiTypography-root MuiTypography-body1  css-1qq3fcx-MuiTypography-root"
+>
+N/A
+</p>
 
-    await waitFor(() => {
-      const percentageValues = screen.getAllByText(/%/);
-      percentageValues.forEach(value => {
-        expect(value.textContent).toMatch(/\d+\.\d{2}%/);
-      });
-    });
-  });
+Ignored nodes: comments, script, style
+<p
+class="MuiTypography-root MuiTypography-body1  css-1qq3fcx-MuiTypography-root"
+>
+N/A
+</p>
 
-  it('formats dollar values correctly', async () => {
-    render(
-      <AuthContext.Provider value={mockAuthContext}>
-        <ProfitAndLoss />
-      </AuthContext.Provider>
-    );
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).      
 
-    await waitFor(() => {
-      const dollarValues = screen.getAllByText(/\$\d+/);
-      expect(dollarValues.length).toBeGreaterThan(0);
-    });
-  });
-});
+Ignored nodes: comments, script, style
+<body>
+<div>
+<div>
+PageHeader Mock
+</div>
+<div
+class="MuiBox-root css-a79foq"
+>
+<div
+class="MuiBox-root css-18bxxuj"
+>
+<h5
+class="MuiTypography-root MuiTypography-h5  css-13cxg7c-MuiTypography-root"
+>
+Store Profit and Loss Metrics
+<label
+class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd  css-sp39m6-MuiFormControlLabel-root"
+>
+<span
+class="MuiSwitch-root MuiSwitch-sizeMedium  css-julti5-MuiSwitch-root"
+>
+<span
+  class="MuiButtonBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary   PrivateSwitchBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary   css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase"
+>
+  <input
+    class="PrivateSwitchBase-input MuiSwitch-input   css-1m9pwf3"
+    type="checkbox"
+  />
+  <span
+    class="MuiSwitch-thumb  css-jsexje-MuiSwitch-thumb"
+  />
+</span>
+<span
+  class="MuiSwitch-track  css-1yjjitx-MuiSwitch-track"
+/>
+</span>
+<span
+class="MuiTypography-root MuiTypography-body1  MuiFormControlLabel-label  css-1edfpdg-MuiTypography-root"
+>
+Detailed Overview
+</span>
+</label>
+</h5>
+<div
+class="MuiBox-root css-u5yl20"
+>
+<p
+class="MuiTypography-root MuiTypography-body2  css-1qpi4wl-MuiTypography-root"
+>
+Comparison Indicators:
+</p>
+<div
+class="MuiBox-root css-egmpzt"
+>
+<svg
+aria-hidden="true"
+class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium  css-1u2klq-MuiSvgIcon-root"
+data-testid="ArrowDropUpIcon"
+focusable="false"
+viewBox="0 0 24 24"
+>
+<path
+  d="m7 14 5-5 5 5z"
+/>
+</svg>
+<p
+class="MuiTypography-root MuiTypography-body2  css-1nmqws6-MuiTypography-root"
+>
+Store value is higher than market
 
+</p>
+</div>
+<div
+class="MuiBox-root css-axw7ok"
+>
+<svg
+aria-hidden="true"
+class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium  css-6modce-MuiSvgIcon-root"
+data-testid="ArrowDropDownIcon"
+focusable="false"
+viewBox="0 0 24 24"
+>
+<path
+  d="m7 10 5 5 5-5z"
+/>
+</svg>
+<p
+class="MuiTypography-root MuiTypography-body2  css-1nmqws6-MuiTypography-root"
+>
+Store value is lower than market
 
+</p>
+</div>
+</div>
+<div
+class="MuiGrid2-root MuiGrid2-container MuiGrid2-direction-xs-row MuiGrid2-spacing-xs-2  css-16m4wkv-MuiGrid2-root"
+>
+<div
+class="MuiGrid2-root MuiGrid2-direction-xs-row  css-1fzlhpv-MuiGrid2-root"
+md="6"
+xs="12"
+>
+<div
+class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1  MuiCard-root  css-1lav1b5-MuiPaper-root-MuiCard-root"
+style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"
+>
+<p
+  class="MuiTypography-root MuiTypography-body1  css-9rafx9-MuiTypography-root"
+>
+  Sales
+</p>
+<div
+  class="MuiCardContent-root  css-46bh2p-MuiCardContent-root"
+>
+  <div
+    class="MuiGrid2-root MuiGrid2-container MuiGrid2-direction-xs-row MuiGrid2-spacing-xs-3  css-e9a930-MuiGrid2-root"    
+  >
+    <div
+      class="MuiGrid2-root MuiGrid2-direction-xs-row  css-1fzlhpv-MuiGrid2-root"
+      xs="6"
+    >
+      <h6
+        class="MuiTypography-root MuiTypography-h6  css-tglbhk-MuiTypography-root"
+      >
+        Store:
+      </h6>
+      <div
+        class="MuiBox-root css-dg598o"
+      >
+        <p
+          class="MuiTypography-root MuiTypography-body1  css-98054b-MuiTypography-root"
+        >
+          $
+        </p>
+        <p
+          class="MuiTypography-root MuiTypography-body1  css-1qq3fcx-MuiTypography-root"
+        >
+          -$NaN
+        </p>
+      </div>
+      <div
+        class="MuiBox-root css-dg598o"
+      >
+        <p
+    ...
 
+206 |     );
+207 |
+> 208 |     await waitFor(() => {
+|                  ^
+209 |       expect(screen.getByText(/N\/A|0/)).toBeInTheDocument();
+210 |     });
+211 |   });
+
+at waitForWrapper (node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:166:27)
+at call (src/pages/performance/ProfitAndLoss.test.js:208:18)
+at tryCatch (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at Generator._invoke (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at Generator.next (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at asyncGeneratorStep (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at _next (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at src/pages/performance/ProfitAndLoss.test.js:2:1
+at Object.<anonymous> (src/pages/performance/ProfitAndLoss.test.js:2:1)
+at TestScheduler.scheduleTests (node_modules/@jest/core/build/TestScheduler.js:333:13)
+at runJest (node_modules/@jest/core/build/runJest.js:404:19)
+at _run10000 (node_modules/@jest/core/build/cli/index.js:320:7)
+at runCLI (node_modules/@jest/core/build/cli/index.js:173:3)
+
+● ProfitAndLoss Component › formats percentage values correctly
+
+Unable to find an element with the text: /%/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+<div>
+<div>
+PageHeader Mock
+</div>
+<div
+class="MuiBox-root css-a79foq"
+>
+<div
+class="MuiBox-root css-18bxxuj"
+>
+<h5
+class="MuiTypography-root MuiTypography-h5  css-13cxg7c-MuiTypography-root"
+>
+Store Profit and Loss Metrics
+<label
+class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd  css-sp39m6-MuiFormControlLabel-root"
+>
+<span
+class="MuiSwitch-root MuiSwitch-sizeMedium  css-julti5-MuiSwitch-root"
+>
+<span
+  class="MuiButtonBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary   PrivateSwitchBase-root MuiSwitch-switchBase MuiSwitch-colorPrimary   css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase"
+>
+  <input
+    class="PrivateSwitchBase-input MuiSwitch-input   css-1m9pwf3"
+    type="checkbox"
+  />
+  <span
+    class="MuiSwitch-thumb  css-jsexje-MuiSwitch-thumb"
+  />
+</span>
+<span
+  class="MuiSwitch-track  css-1yjjitx-MuiSwitch-track"
+/>
+</span>
+<span
+class="MuiTypography-root MuiTypography-body1  MuiFormControlLabel-label  css-1edfpdg-MuiTypography-root"
+>
+Detailed Overview
+</span>
+</label>
+</h5>
+<div
+class="MuiBox-root css-u5yl20"
+>
+<p
+class="MuiTypography-root MuiTypography-body2  css-1qpi4wl-MuiTypography-root"
+>
+Comparison Indicators:
+</p>
+<div
+class="MuiBox-root css-egmpzt"
+>
+<svg
+aria-hidden="true"
+class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium  css-1u2klq-MuiSvgIcon-root"
+data-testid="ArrowDropUpIcon"
+focusable="false"
+viewBox="0 0 24 24"
+>
+<path
+  d="m7 14 5-5 5 5z"
+/>
+</svg>
+<p
+class="MuiTypography-root MuiTypography-body2  css-1nmqws6-MuiTypography-root"
+>
+Store value is higher than market
+
+</p>
+</div>
+<div
+class="MuiBox-root css-axw7ok"
+>
+<svg
+aria-hidden="true"
+class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium  css-6modce-MuiSvgIcon-root"
+data-testid="ArrowDropDownIcon"
+focusable="false"
+viewBox="0 0 24 24"
+>
+<path
+  d="m7 10 5 5 5-5z"
+/>
+</svg>
+<p
+class="MuiTypography-root MuiTypography-body2  css-1nmqws6-MuiTypography-root"
+>
+Store value is lower than market
+
+</p>
+</div>
+</div>
+<div
+class="MuiGrid2-root MuiGrid2-container MuiGrid2-direction-xs-row MuiGrid2-spacing-xs-2  css-16m4wkv-MuiGrid2-root"
+>
+<div
+class="MuiGrid2-root MuiGrid2-direction-xs-row  css-1fzlhpv-MuiGrid2-root"
+md="6"
+xs="12"
+>
+<div
+class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1  MuiCard-root  css-1lav1b5-MuiPaper-root-MuiCard-root"
+style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"
+>
+<p
+  class="MuiTypography-root MuiTypography-body1  css-9rafx9-MuiTypography-root"
+>
+  Sales
+</p>
+<div
+  class="MuiCardContent-root  css-46bh2p-MuiCardContent-root"
+>
+  <div
+    class="MuiGrid2-root MuiGrid2-container MuiGrid2-direction-xs-row MuiGrid2-spacing-xs-3  css-e9a930-MuiGrid2-root"    
+  >
+    <div
+      class="MuiGrid2-root MuiGrid2-direction-xs-row  css-1fzlhpv-MuiGrid2-root"
+      xs="6"
+    >
+      <h6
+        class="MuiTypography-root MuiTypography-h6  css-tglbhk-MuiTypography-root"
+      >
+        Store:
+      </h6>
+      <div
+        class="MuiBox-root css-dg598o"
+      >
+        <p
+          class="MuiTypography-root MuiTypography-body1  css-98054b-MuiTypography-root"
+        >
+          $
+        </p>
+        <p
+          class="MuiTypography-root MuiTypography-body1  css-1qq3fcx-MuiTypography-root"
+        >
+          $0.00
+        </p>
+      </div>
+      <div
+        class="MuiBox-root css-dg598o"
+      >
+        <p
+    ...
+
+218 |     );
+219 |
+> 220 |     await waitFor(() => {
+|                  ^
+221 |       const percentageValues = screen.getAllByText(/%/);
+222 |       percentageValues.forEach(value => {
+223 |         expect(value.textContent).toMatch(/\d+\.\d{2}%/);
+
+Test Suites: 1 failed, 1 total
+Tests:       5 failed, 5 passed, 10 total
+Snapshots:   0 total
+Time:        14.024 s
